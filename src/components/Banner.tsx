@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 const Banner = () => {
 
@@ -12,8 +13,8 @@ const Banner = () => {
                         entirely.
                     </p>
                     <div>
-                        <a href="#" className="btn btn-primary my-2 mx-1">Login</a>
-                        <a href="#" className="btn btn-outline-secondary my-2 mx-1">Register</a>
+                        <Link to={'/login'} className="btn btn-primary my-2 mx-1">Login</Link>
+                        <Link to={'/register'} className="btn btn-outline-secondary my-2 mx-1">Register</Link>
                     </div>
                 </div>
             </div>
