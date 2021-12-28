@@ -1,6 +1,26 @@
-import React from "react";
+import React, {Dispatch, PropsWithRef} from "react";
+import {User} from "../classes/User";
+import setUser from "../redux/actions/setUserAction";
+import {connect} from "react-redux";
+import {Link} from "react-router-dom";
 
-const Header = () => {
+const Header = (props: PropsWithRef<any>) => {
+    let action = (
+        <li className="nav-item">
+            <a className="nav-link" href="/login">Login</a>
+        </li>
+    );
+
+    if (props.user.isAuthenticated) {
+        action = <>
+            <li className="nav-item">
+                <Link to={'/'} className="nav-link" onClick={() => localStorage.clear()}>Logout</Link>
+            </li>
+            <li className="nav-item">
+                <a className="btn btn-outline-primary" href="/profile">{props.user.first_name}</a>
+            </li>
+        </>
+    }
     return (
         <header className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
             <div className="container">
@@ -23,9 +43,7 @@ const Header = () => {
                         <li className="nav-item">
                             <a className="nav-link" href="/rankings">Rankings</a>
                         </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="/logout">Logout</a>
-                        </li>
+                        {action}
                     </ul>
                 </div>
             </div>
@@ -33,4 +51,14 @@ const Header = () => {
     )
 }
 
-export default Header;
+const mapStateToProps = (state: {user: User, isLoading: boolean, isAuthenticated: boolean}) => {
+    return {
+        user: state.user,
+        isUserLoading: state.isLoading,
+        isAuthenticated: state.isAuthenticated,
+    }
+}
+
+const connectToRedux = connect(mapStateToProps)
+
+export default connectToRedux(Header);

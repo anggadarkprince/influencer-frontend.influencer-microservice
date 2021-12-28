@@ -6,15 +6,19 @@ import {User} from "../classes/User";
 import {connect} from "react-redux";
 import setUser from "../redux/actions/setUserAction";
 
-const Wrapper = (props: PropsWithChildren<any>) => {
+const Wrapper = (props: PropsWithChildren<{ user: User, setUser: any }>) => {
 
     useEffect(() => {
         (async () => {
-            const response = await axios.get('user');
+            try {
+                const response = await axios.get('user');
 
-            const user: User = response.data.data;
+                const user: User = response.data.data;
 
-            props.setUser(new User(user.id, user.first_name, user.last_name, user.email, user.revenue));
+                props.setUser(new User(user.id, user.first_name, user.last_name, user.email, user.revenue));
+            } catch (e) {
+                props.setUser(new User());
+            }
         })();
     }, []);
 

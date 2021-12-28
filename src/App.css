@@ -1,0 +1,7 @@
+.card.card-product {
+    cursor: pointer;
+}
+
+.card.card-product.selected {
+    border: 4px solid darkcyan;
+}
