@@ -34,7 +34,6 @@ const Wrapper = (props: PropsWithChildren<{ user: User, isUserLoading: boolean, 
     }
 
     if (redirectIfUnauthenticated) {
-        console.log('redirect login');
         return <Navigate to={'/login'}/>;
     }
 

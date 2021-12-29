@@ -11,33 +11,54 @@ class Login extends Component<{user: User, isUserLoading: boolean, isAuthenticat
     email = '';
     password = '';
     state = {
-        redirect: !this.props.isUserLoading && this.props.isAuthenticated
+        redirect: !this.props.isUserLoading && this.props.isAuthenticated,
+        info: {
+            type: null,
+            message: null
+        }
     }
 
     submitLoginForm = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        const response = await axios.post('login', {
-            email: this.email,
-            password: this.password,
-            scope: 'influencer'
-        });
-        const user: User = Object.assign(new User(), response.data.user);
+        this.setState({info: {type: null, message: null}})
 
-        this.props.setUser(user);
+        try {
+            const response = await axios.post('login', {
+                email: this.email,
+                password: this.password,
+                scope: 'influencer'
+            });
+            const user: User = Object.assign(new User(), response.data.user);
 
-        //localStorage.setItem('token', response.data.token);
-        //axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+            this.props.setUser(user);
 
-        this.setState({
-            redirect: true
-        });
+            //localStorage.setItem('token', response.data.token);
+            //axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+
+            this.setState({
+                redirect: true
+            });
+        } catch (e: any) {
+            let type: string = 'warning';
+            let message = '';
+            if (e.response.status === 401) {
+                type = 'danger';
+                message = 'Username or password wrong';
+            } else {
+                message = e.response.statusText || e.message
+            }
+            this.setState({
+                info: {
+                    type: type,
+                    message: message
+                }
+            })
+        }
     }
 
     render() {
         if (this.state.redirect || (!this.props.isUserLoading && this.props.isAuthenticated)) {
-            console.log(this.state.redirect, !this.props.isUserLoading, this.props.isAuthenticated)
-            console.log('redirect /')
             return <Navigate to={'/'} />;
         }
 
@@ -47,6 +68,13 @@ class Login extends Component<{user: User, isUserLoading: boolean, isAuthenticat
                     <Icon.Lock size={48} className="mb-3 text-primary"/>
                     <h1 className="h3 fw-normal mb-1">Please Sign In</h1>
                     <p className="text-muted mb-4">Continue to influencer private page</p>
+
+                    {
+                        this.state.info.message &&
+                        <div className={`text-start alert alert-${this.state.info.type || 'info'}`}>
+                            {this.state.info.message || ''}
+                        </div>
+                    }
 
                     <div className="form-floating">
                         <input type="email" className="form-control" id="floatingInputEmail"
