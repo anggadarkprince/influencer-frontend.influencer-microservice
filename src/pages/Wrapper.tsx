@@ -1,12 +1,14 @@
-import React, {Dispatch, PropsWithChildren, useEffect} from "react";
+import React, {Dispatch, PropsWithChildren, SyntheticEvent, useEffect, useState} from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import axios from 'axios';
 import {User} from "../classes/User";
 import {connect} from "react-redux";
 import setUser from "../redux/actions/setUserAction";
+import {Navigate} from "react-router-dom";
 
-const Wrapper = (props: PropsWithChildren<{ user: User, setUser: any }>) => {
+const Wrapper = (props: PropsWithChildren<{ user: User, isUserLoading: boolean, isAuthenticated: boolean, setUser: any }>) => {
+    const [redirectIfUnauthenticated, setLogout]: [boolean, any] = useState(!props.isUserLoading && !props.isAuthenticated);
 
     useEffect(() => {
         (async () => {
@@ -22,9 +24,23 @@ const Wrapper = (props: PropsWithChildren<{ user: User, setUser: any }>) => {
         })();
     }, []);
 
+    const handleSignOut = async (e: SyntheticEvent) => {
+        e.preventDefault();
+
+        await axios.post('logout', {});
+
+        setLogout(true)
+        props.setUser(new User())
+    }
+
+    if (redirectIfUnauthenticated) {
+        console.log('redirect login');
+        return <Navigate to={'/login'}/>;
+    }
+
     return (
         <>
-            <Header/>
+            <Header handleSignOut={handleSignOut}/>
             <main>
                 {props.children}
             </main>

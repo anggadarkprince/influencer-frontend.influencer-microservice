@@ -1,30 +1,31 @@
-import React, {Dispatch, PropsWithRef} from "react";
+import React, {PropsWithRef} from "react";
 import {User} from "../classes/User";
-import setUser from "../redux/actions/setUserAction";
 import {connect} from "react-redux";
-import {Link} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 
 const Header = (props: PropsWithRef<any>) => {
     let action = (
         <li className="nav-item">
-            <a className="nav-link" href="/login">Login</a>
+            <Link className="nav-link" to="/login">Login</Link>
         </li>
     );
 
-    if (props.user.isAuthenticated) {
+    if (props.isAuthenticated) {
         action = <>
-            <li className="nav-item">
-                <Link to={'/'} className="nav-link" onClick={() => localStorage.clear()}>Logout</Link>
+            <li className="nav-item me-3">
+                <Link to={'/logout'} className="nav-link" onClick={props.handleSignOut}>Logout</Link>
             </li>
             <li className="nav-item">
-                <a className="btn btn-outline-primary" href="/profile">{props.user.first_name}</a>
+                <Link className="btn btn-outline-primary" to="/profile">
+                    {props.user.first_name + ' ' + props.user.last_name}
+                </Link>
             </li>
         </>
     }
     return (
         <header className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
             <div className="container">
-                <a href="#" className="navbar-brand d-flex align-items-center">
+                <a href="/" className="navbar-brand d-flex align-items-center">
                     <strong>Influencer</strong>
                 </a>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -35,13 +36,13 @@ const Header = (props: PropsWithRef<any>) => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto">
                         <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" href="/">Home</a>
+                            <NavLink className="nav-link" to="/">Home</NavLink>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="/stats">Stats</a>
+                            <NavLink className="nav-link" to="/stats">Stats</NavLink>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="/rankings">Rankings</a>
+                            <NavLink className="nav-link" to="/rankings">Rankings</NavLink>
                         </li>
                         {action}
                     </ul>

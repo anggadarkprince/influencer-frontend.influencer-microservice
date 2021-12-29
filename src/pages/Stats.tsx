@@ -1,26 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import Wrapper from "./Wrapper";
 import axios from 'axios';
-import {Ranking} from "../classes/Ranking";
+import constants from "../constants";
 
-const Rankings = () => {
-    const [rankings, setRankings]: [Ranking[], any] = useState([]);
+const Stats = () => {
+    const [stats, setStats] = useState([]);
 
     useEffect(() => {
         (
             async () => {
-                const response = await axios.get('rankings');
+                const response = await axios.get('stats');
 
-                const data = [];
-                for (const property in response.data) {
-                    if (response.data.hasOwnProperty(property)) {
-                        data.push({
-                            name: property,
-                            revenue: response.data[property]
-                        });
-                    }
-                }
-                setRankings(data);
+                setStats(response.data);
             }
         )();
     }, []);
@@ -29,7 +20,6 @@ const Rankings = () => {
         <Wrapper>
             <div className="album py-5 bg-light">
                 <div className="container">
-                    <h1 className="h3">Influencer Rankings</h1>
                     <div className="table-responsive">
                         <table className="table table-striped table-sm">
                             <thead>
@@ -40,13 +30,13 @@ const Rankings = () => {
                             </tr>
                             </thead>
                             <tbody>
-                            {rankings.length === 0 && <tr><td colSpan={3}>No data available</td></tr>}
-                            {rankings.map((ranking: Ranking, index) => {
+                            {stats.length === 0 && <tr><td colSpan={3}>No data available</td></tr>}
+                            {stats.map((stat: { code: string, revenue: number }, index) => {
                                 return (
                                     <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td>{ranking.name}</td>
-                                        <td>{ranking.revenue}</td>
+                                        <td>{`${constants.CHECKOUT_URL}/${stat.code}`}</td>
+                                        <td>{stat.code}</td>
+                                        <td>{stat.revenue}</td>
                                     </tr>
                                 );
                             })}
@@ -59,4 +49,4 @@ const Rankings = () => {
     );
 };
 
-export default Rankings;
+export default Stats;

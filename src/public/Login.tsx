@@ -36,6 +36,8 @@ class Login extends Component<{user: User, isUserLoading: boolean, isAuthenticat
 
     render() {
         if (this.state.redirect || (!this.props.isUserLoading && this.props.isAuthenticated)) {
+            console.log(this.state.redirect, !this.props.isUserLoading, this.props.isAuthenticated)
+            console.log('redirect /')
             return <Navigate to={'/'} />;
         }
 
